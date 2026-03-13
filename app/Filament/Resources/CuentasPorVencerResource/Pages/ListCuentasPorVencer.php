@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Filament\Resources\CuentasPorVencerResource\Pages;
+
+use App\Filament\Resources\CuentasPorVencerResource;
+use Filament\Resources\Pages\ListRecords;
+
+class ListCuentasPorVencer extends ListRecords
+{
+    protected static string $resource = CuentasPorVencerResource::class;
+
+    public function getTitle(): string
+    {
+        return 'Clientes por vencer';
+    }
+
+    public function getSubheading(): string
+    {
+        return 'Monitorea clientes con cuentas próximas a vencer';
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        return [
+            url()->route('filament.admin.pages.dashboard') => 'Clientes por vencer',
+            'Listado',
+        ];
+    }
+}

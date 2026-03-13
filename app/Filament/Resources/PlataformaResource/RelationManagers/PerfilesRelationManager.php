@@ -1,0 +1,107 @@
+<?php
+
+namespace App\Filament\Resources\PlataformaResource\RelationManagers;
+
+use App\Models\Perfil;
+use App\Support\ActionStyle;
+use App\Support\ClientFormSchema;
+use Filament\Forms;
+use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Tables;
+use Filament\Tables\Table;
+
+class PerfilesRelationManager extends RelationManager
+{
+    protected static string $relationship = 'perfiles';
+
+    protected static ?string $title = 'Clientes';
+
+    public function table(Table $table): Table
+    {
+        return $table
+            ->recordAction('ver')
+            ->columns([
+                Tables\Columns\TextColumn::make('cliente_nombre')
+                    ->label('Nombre cliente')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('cliente_telefono')
+                    ->label('Número teléfono')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('proveedor_nombre')
+                    ->label('Proveedor')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('correo_cuenta')->label('Correo cuenta')->searchable(),
+                Tables\Columns\TextColumn::make('contrasena_cuenta')->label('Contraseña cuenta')->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('nombre_perfil')->label('Número perfil')->searchable(),
+                Tables\Columns\TextColumn::make('pin')->label('PIN')->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('fecha_inicio')->label('Fecha inicio')->toggleable(isToggledHiddenByDefault: true)->date(),
+                Tables\Columns\TextColumn::make('fecha_corte')->label('Fecha corte')->toggleable(isToggledHiddenByDefault: true)->date(),
+                Tables\Columns\TextColumn::make('fecha_caducidad_cuenta')->label('Fecha caducidad')->date(),
+                Tables\Columns\TextColumn::make('dias_restantes')
+                    ->label('Quedan (días)')
+                    ->alignment('center')
+                    ->badge()
+                    ->color(fn ($state) => $state === null ? 'gray' : ($state <= 0 ? 'danger' : ($state <= 5 ? 'warning' : 'success')))
+                    ->formatStateUsing(fn ($state) => $state === null ? '-' : (string) $state),
+            ])
+            ->defaultSort('id', 'desc')
+            ->headerActions([
+                ActionStyle::create(Tables\Actions\CreateAction::make('agregarCliente'))
+                    ->label('Agregar cliente')
+                    ->successNotificationTitle('Registro creado correctamente.')
+                    ->model(Perfil::class)
+                    ->form([
+                        Forms\Components\Hidden::make('plataforma_id')
+                            ->default(fn (PerfilesRelationManager $livewire) => $livewire->ownerRecord->id),
+                        ...ClientFormSchema::identityFields(),
+                        Forms\Components\TextInput::make('proveedor_nombre')->label('Proveedor')->required()->maxLength(120),
+                        Forms\Components\TextInput::make('correo_cuenta')->label('Correo cuenta')->required()->email()->maxLength(255),
+                        Forms\Components\TextInput::make('contrasena_cuenta')->label('Contraseña cuenta')->required()->maxLength(255),
+                        Forms\Components\TextInput::make('nombre_perfil')->label('Número perfil')->required()->maxLength(100),
+                        Forms\Components\TextInput::make('pin')->label('PIN')->maxLength(20),
+                        Forms\Components\DatePicker::make('fecha_inicio')->label('Fecha inicio')->required(),
+                        Forms\Components\DatePicker::make('fecha_corte')->label('Fecha corte')->required(),
+                        Forms\Components\DatePicker::make('fecha_caducidad_cuenta')->label('Fecha caducidad')->required(),
+                    ])
+                    ->using(fn (array $data) => Perfil::create($data)),
+            ])
+            ->actions([
+                Tables\Actions\ActionGroup::make([
+                    ActionStyle::view(Tables\Actions\Action::make('ver'))
+                        ->label('Ver')
+                        ->modalHeading('Detalle del cliente')
+                        ->modalSubmitAction(false)
+                        ->modalCancelActionLabel('Cerrar')
+                        ->modalContent(fn (Perfil $record) => view('filament.modals.detalle-cliente', [
+                            'perfil' => $record->loadMissing(['plataforma', 'cuenta']),
+                        ])),
+                    ActionStyle::edit(Tables\Actions\EditAction::make())
+                        ->successNotificationTitle('Cambios guardados correctamente.')
+                        ->form([
+                            ...ClientFormSchema::identityFields(),
+                            Forms\Components\TextInput::make('proveedor_nombre')->label('Proveedor')->required()->maxLength(120),
+                            Forms\Components\TextInput::make('correo_cuenta')->label('Correo cuenta')->required()->email()->maxLength(255),
+                            Forms\Components\TextInput::make('contrasena_cuenta')->label('Contraseña cuenta')->required()->maxLength(255),
+                            Forms\Components\TextInput::make('nombre_perfil')->label('Número perfil')->required()->maxLength(100),
+                            Forms\Components\TextInput::make('pin')->label('PIN')->maxLength(20),
+                            Forms\Components\DatePicker::make('fecha_inicio')->label('Fecha inicio')->required(),
+                            Forms\Components\DatePicker::make('fecha_corte')->label('Fecha corte')->required(),
+                            Forms\Components\DatePicker::make('fecha_caducidad_cuenta')->label('Fecha caducidad')->required(),
+                        ]),
+                    ActionStyle::delete(Tables\Actions\DeleteAction::make())
+                        ->modalHeading('Confirmar eliminación')
+                        ->modalDescription('Esta acción no se puede deshacer.')
+                        ->modalSubmitActionLabel('Eliminar')
+                        ->successNotificationTitle('Registro eliminado correctamente.'),
+                ])
+                    ->icon('heroicon-m-ellipsis-vertical')
+                    ->label(''),
+            ])
+            ->actionsColumnLabel('Acción')
+            ->actionsAlignment('center')
+            ->bulkActions([]);
+    }
+
+}

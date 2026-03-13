@@ -1,0 +1,107 @@
+@import '/vendor/filament/filament/resources/css/theme.css';
+
+:root {
+    --primary: 59, 130, 246;
+    --success: 34, 197, 94;
+    --warning: 234, 179, 8;
+    --danger: 239, 68, 68;
+    --info: 96, 165, 250; /* Azul claro para productos */
+}
+
+.filament-panels-page {
+    background: linear-gradient(to right, #f9fafb, #ffffff);
+}
+
+@media (prefers-color-scheme: dark) {
+    .filament-panels-page {
+        background: linear-gradient(to right, #111827, #1f2937);
+    }
+}
+
+.filament-card {
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    transition: box-shadow 0.2s;
+}
+.filament-card:hover {
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+@media (prefers-color-scheme: dark) {
+    .filament-card {
+        background-color: #1f2937;
+        border: 1px solid #374151;
+    }
+}
+
+.ui-dense .fi-section,
+.ui-dense .fi-card,
+.ui-dense .fi-ta-content {
+    --spacing: 0.75rem;
+}
+
+.ui-dense .fi-ta-table tbody tr td {
+    padding-top: 0.45rem;
+    padding-bottom: 0.45rem;
+}
+
+.ui-reduce-motion *,
+.ui-reduce-motion *::before,
+.ui-reduce-motion *::after {
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
+}
+
+.fi-sidebar:not(.fi-sidebar-open) {
+    transform: translateX(0) !important;
+    width: 9.5rem !important;
+}
+
+.fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-header {
+    justify-content: center;
+    padding-left: 0.9rem;
+    padding-right: 0.9rem;
+}
+
+.fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-header > div:first-child {
+    display: flex !important;
+    width: 100%;
+    justify-content: center;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-header > div:first-child a,
+.fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-header > div:first-child .fi-logo {
+    display: inline-flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-header button.mx-auto {
+    display: none !important;
+}
+
+.fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-nav {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-top: 0.9rem;
+}
+
+.fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-item-button {
+    justify-content: flex-start !important;
+    padding-left: 0.55rem;
+    padding-right: 0.4rem;
+}
+
+.fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-group-button {
+    justify-content: flex-start;
+    padding-left: 0.55rem;
+}
+
+/* Keep navigation badges visible while sidebar is collapsed. */
+.fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-item-button > span:not(.fi-sidebar-item-label) {
+    display: inline-flex !important;
+    margin-left: auto;
+}
